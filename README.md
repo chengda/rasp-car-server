@@ -89,3 +89,7 @@ sudo systemctl start rasp-car-server
 ```
 sudo systemctl enable rasp-car-server
 ```
+## 4. 操作
+假设树梅派的IP地址是：192.168.1.11，那么客户端入口就是: http://192.168.1.11。通过任意手机浏览器都可以访问和操作。加个壳就能做成APP。
+
+![screenshot](md/screenshot1.png)
