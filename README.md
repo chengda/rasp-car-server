@@ -27,9 +27,15 @@ Java代码中通过pi4j控制树梅派的GPIO。
 
 ## 2. 源码编译打包
 
-```
-mvn -U -e clean package
-```
+- 客户端更新（可选）
+
+    客户端源码在[这里](https://github.com/chengda/rasp-car-client)，编译后的客户端代码放置在/src/main/resources/static/下面，这是springboot的默认规则。
+
+- 编译打包
+
+    ```
+    mvn -U -e clean package
+    ```
 
 ## 3. 安装部署
 ### 3.1. 安装摄像头驱动软件
