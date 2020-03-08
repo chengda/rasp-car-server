@@ -25,3 +25,61 @@ Java代码中通过pi4j控制树梅派的GPIO。
 
 树梅派的GPIO 00～03, 依次分别链接IN1~IN4，电源正确连接即可，注意正负极和电压匹配。
 
+## 2. 源码编译打包
+
+```
+mvn -U -e clean package
+```
+
+## 3. 安装部署
+### 3.1. 安装摄像头驱动软件
+
+```
+sudo apt-get install motion
+```
+- 修改配置文件：/etc/default/motion，设置适当的分辨率
+```
+    width: 640
+    height: 480
+```
+- 启动motion设置开机启动
+```
+    systemctl start motion
+    systemctl enable motion
+```
+- 启动后motion会监听8080和8081端口，其中8081端口就是视频流。
+
+### 3.2. 部署rasp-car服务端
+- 在/home/pi下新建rasp-car目录作为服务端的根目录
+- 把前面编译打包好的rasp-car-server-1.0.0-SNAPSHOT.jar上传到这个目录下
+- 在该目录下新建启动脚本startup.sh，内容如下：
+```
+#!/bin/bash
+
+RASP_CAR_HOME=$(cd $(dirname ${BASH_SOURCE}) && pwd)
+
+echo "RASP_CAR_HOME:${RASP_CAR_HOME}"
+
+nohup java -Dserver.port=80 -jar ${RASP_CAR_HOME}/rasp-car-server-1.0.0-SNAPSHOT.jar > ${RASP_CAR_HOME}/rasp-car.log
+```
+- 新建systemctl配置文件，/usr/lib/systemd/system/rasp-car-server.service，内容如下：
+```
+[Unit]
+Description=raspberry car server
+After=network.target
+
+[Service]
+ExecStart=/home/pi/rasp-car/startup.sh
+
+[Install]
+WantedBy=multi-user.target
+
+```
+- 启动rasp-car服务
+```
+sudo systemctl start rasp-car-server
+```
+- 设置开机自动启动
+```
+sudo systemctl enable rasp-car-server
+```
